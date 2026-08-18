@@ -1,0 +1,43 @@
+{
+  "singleQuote": true,
+  "useTabs": false,
+  "semi": true,
+  "printWidth": 120,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "arrowParens": "always",
+  "quoteProps": "consistent",
+  "objectWrap": "collapse",
+  "sortTailwindcss": true,
+  "sortPackageJson": true,
+  "sortImports": {
+    "newlinesBetween": true,
+    "customGroups": [{ "groupName": "workspace", "elementNamePattern": ["@repo/**"] }],
+    "internalPattern": ["@/", "#/"],
+    "groups": [
+      "type-import",
+      ["value-builtin", "value-external"],
+      "workspace",
+      "type-internal",
+      "value-internal",
+      ["type-parent", "type-sibling", "type-index"],
+      ["value-parent", "value-sibling", "value-index"],
+      "unknown"
+    ]
+  },
+  "ignorePatterns": [
+    "node_modules/**",
+    "**/.git",
+    "**/.hg",
+    "**/.pnp.*",
+    "**/.svn",
+    "**/.yarn/**",
+    "**/build",
+    "**/dist/**",
+    "**/.next/**",
+    "**/node_modules",
+    "**/.tmp/**",
+    "**/temp",
+    "**/src-tauri/**"
+  ]
+}
