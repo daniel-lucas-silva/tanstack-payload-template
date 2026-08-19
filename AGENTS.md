@@ -15,8 +15,7 @@ peças de `collections/`, `globals/`, `access/`, `jobs/` e `endpoints/` (não é
 - `bun dev` — servidor + HMR; no boot roda `generateTypes` (regenera `server/types.ts`) e semeia o primeiro admin (`ADMIN_EMAIL`/`ADMIN_PASSWORD`).
 - `bun run routes:gen` — gera `app/routeTree.gen.ts` (rotas file-based do TanStack). Rode após criar `app/routes/...`.
 - `bun run build` — `routes:gen` + `build.ts` (Bun build → `dist/`, roda `bun dist/index.js`).
-- `bunx tsc --noEmit` — typecheck (não há script próprio; é o único typecheck).
-- `bun run check` — `oxlint` (exige 0 erros).
+- `bunx oxlint --quiet <path>` — lint de arquivo/pasta isolado (oxlint-tsgolint; rápido). **A verificação de erros é sempre pontual, nunca global** — rode no arquivo/pasta que mexeu.
 - `bun test` — testes (via `bun:test`); hoje não há testes no repo.
 
 ## Arquitetura (fluxo de dados)

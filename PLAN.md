@@ -47,7 +47,7 @@
    - `start`: `NODE_ENV=production bun dist/index.js`
    - `build`: `bun run build.ts`
    - `typegen`: gerar `server/types.ts`
-   - `check`: `bunx oxlint . --quiet`
+   - `lint`: `bunx oxlint --quiet <path>` (pontual, nunca global)
    - `test`: `bun test`
 3. `.env.example` (`MONGODB_URI`, `PAYLOAD_SECRET`, `PORT`) + leitura via `Bun.env` no boot (hoje: sem `.env` o servidor crasha).
 4. Estrutura final de pastas + remover `app/index.ts` quebrado (import de HTML mora no `index.ts` raiz).
@@ -102,7 +102,7 @@
 
 ### Fase 6 — Gates de verificação
 
-- `bunx oxlint . --quiet` → 0 erros
+- `bunx oxlint --quiet <path>` → 0 erros (pontual)
 - `bun run build` → passa e emite `dist/` completo
 - Boot limpo com `.env` de exemplo (Mongo local ou Atlas sandbox)
 - Smoke test: `curl /api/health`, página renderiza, types regeneram

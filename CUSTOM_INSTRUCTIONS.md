@@ -53,12 +53,10 @@ server/ (schema) → generateTypes (boot) → server/types.ts (Config)
 bun dev                 # servidor + HMR (regenera types no boot)
 bun run routes:gen      # após criar app/routes/...
 bun run build           # build de produção
-bunx tsc --noEmit       # typecheck
-bun run check           # oxlint
+bunx oxlint --quiet <path>   # lint pontual (arquivo/pasta que mexeu)
 ```
 
 ## Depois de codar (obrigatório)
 
-- `bunx tsc --noEmit` = **0 erros**
-- `bun run check` (oxlint) = **0 erros**
+- `bunx oxlint --quiet <path>` no que mexeu = **0 erros** (verificação pontual, nunca global)
 - `bun run build` passa

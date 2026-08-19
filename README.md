@@ -194,14 +194,13 @@ export const admins: Access = ({ req }) => {
 
 ## Scripts
 
-| Comando              | O que faz                                 |
-| -------------------- | ----------------------------------------- |
-| `bun dev`            | servidor + HMR (regenera types no boot)   |
-| `bun run routes:gen` | gera `routeTree.gen.ts` (após criar rota) |
-| `bun run build`      | build de produção (routes:gen + build.ts) |
-| `bun run check`      | oxlint (0 erros)                          |
-| `bunx tsc --noEmit`  | typecheck (0 erros)                       |
-| `bun test`           | testes                                    |
+| Comando                      | O que faz                                         |
+| ---------------------------- | ------------------------------------------------- |
+| `bun dev`                    | servidor + HMR (regenera types no boot)           |
+| `bun run routes:gen`         | gera `routeTree.gen.ts` (após criar rota)         |
+| `bun run build`              | build de produção (routes:gen + build.ts)         |
+| `bunx oxlint --quiet <path>` | lint pontual do arquivo/pasta que mexeu (0 erros) |
+| `bun test`                   | testes                                            |
 
 ## Docs
 
