@@ -208,3 +208,6 @@ export const admins: Access = ({ req }) => {
 - [Arquitetura e padrões](docs/arquitetura.md)
 - [Payload 3.88 — cheatsheet](docs/payload-3.md)
 - [Regras do agente (Bun + Payload)](AGENTS.md)
+
+> Planos, relatórios e decisões de trabalho também ficam em `docs/`, **numerados em
+> ordem** (`docs/plan-01-<slug>.md`, `docs/report-01-<slug>.md`) para rastrear o histórico.

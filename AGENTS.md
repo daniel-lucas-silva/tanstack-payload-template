@@ -54,6 +54,14 @@ app/routes/         (páginas React, TanStack Router file-based)
   `context.triggerAfterChange === false` (ver `Posts`).
 - `graphQL.disable` está ligado — API é REST (consumida pelo SDK).
 
+## Documentação de trabalho (planos, reports, decisões)
+
+- **Plano, relatório, decisão ou nota de trabalho vai para `docs/`** como markdown,
+  **numerado em ordem** para rastrear o histórico — ex.: `docs/plan-01-<slug>.md`,
+  `docs/report-01-<slug>.md`.
+- **Não mostre o plano só no chat** — grave em `docs/` antes (ou junto) de apresentar.
+- A cada novo documento, **incremente o número** (não sobrescreva os anteriores).
+
 ## Referências
 
 - Padrão completo ("golden path"): `app/routes/posts/index.tsx`.
