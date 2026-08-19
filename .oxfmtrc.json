@@ -12,12 +12,10 @@
   "sortPackageJson": true,
   "sortImports": {
     "newlinesBetween": true,
-    "customGroups": [{ "groupName": "workspace", "elementNamePattern": ["@repo/**"] }],
     "internalPattern": ["@/", "#/"],
     "groups": [
       "type-import",
       ["value-builtin", "value-external"],
-      "workspace",
       "type-internal",
       "value-internal",
       ["type-parent", "type-sibling", "type-index"],

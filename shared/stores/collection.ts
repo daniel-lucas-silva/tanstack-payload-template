@@ -2,6 +2,7 @@ import type { Where } from 'payload';
 
 import { useStore } from '@tanstack/react-store';
 import { Store } from '@tanstack/store';
+import { useEffect } from 'react';
 
 import type { CollectionSlug, CreateData, Doc, DocID, FindQuery, StoreStatus, UpdateData } from './types';
 
@@ -173,5 +174,12 @@ export function getCollectionStore<S extends CollectionSlug>(slug: S) {
 export function useCollection<S extends CollectionSlug>(slug: S) {
   const { store, ...methods } = getCollectionStore(slug);
   const state = useStore(store, (s) => s);
+
+  // Auto-fetch no mount: busca 1x (guard status==='idle' evita re-fetch no singleton).
+  useEffect(() => {
+    const entry = getCollectionStore(slug);
+    if (entry.store.state.status === 'idle') void entry.find();
+  }, [slug]);
+
   return { ...state, ...methods };
 }

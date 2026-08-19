@@ -1,5 +1,6 @@
 import { useStore } from '@tanstack/react-store';
 import { Store } from '@tanstack/store';
+import { useEffect } from 'react';
 
 import type { DocID, GlobalData, GlobalSlug, LocaleOrAll, StoreStatus } from './types';
 
@@ -70,5 +71,12 @@ export function getGlobalStore<S extends GlobalSlug>(slug: S) {
 export function useGlobal<S extends GlobalSlug>(slug: S) {
   const { store, ...methods } = getGlobalStore(slug);
   const state = useStore(store, (s) => s);
+
+  // Auto-fetch no mount: busca 1x (guard status==='idle' evita re-fetch no singleton).
+  useEffect(() => {
+    const entry = getGlobalStore(slug);
+    if (entry.store.state.status === 'idle') void entry.findGlobal();
+  }, [slug]);
+
   return { ...state, ...methods };
 }

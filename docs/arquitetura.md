@@ -6,7 +6,9 @@
 ## 1. Fluxo de dados
 
 ```
-server/config.ts ──(generateTypes no boot)──▶ server/types.ts
+server/config.ts ──(monta)──▶ collections/ globals/ access/ jobs/ endpoints/
+      │
+      └──(generateTypes no boot)──▶ server/types.ts
                                                      │ (Config)
                                                      ▼
                                          shared/lib/sdk.ts  (PayloadSDK<Config>)
@@ -18,15 +20,16 @@ server/config.ts ──(generateTypes no boot)──▶ server/types.ts
                                         app/routes/  (páginas React)
 ```
 
-Uma única fonte de verdade: o `config.ts`. Dele nascem os tipos (`server/types.ts`), e
+Uma única fonte de verdade: o `server/`. Dele nascem os tipos (`server/types.ts`), e
 toda a camada de dados (`sdk` + `stores`) herda a tipagem **fim-a-fim** — sem declarar
 tipo manualmente.
 
 ## 2. As peças
 
-### `server/config.ts` — o catálogo de capacidades
+### `server/` — o catálogo de capacidades, por pastas
 
-Um arquivo único que demonstra **tudo** o que o Payload faz, só na API (sem admin UI):
+O `server/config.ts` é só o ponto de **montagem** — importa as peças e chama `buildConfig`.
+Cada peça vive na sua pasta e demonstra **tudo** o que o Payload faz, só na API (sem admin UI):
 
 - **Access control** — helpers reutilizáveis (`anyone`, `authenticated`, `admins`,
   `selfOrAdmin`, `publishedOrAuthenticated`), row-level com `Where`, field access,
@@ -61,7 +64,8 @@ o mesmo estado.
 
 ## 3. Como adicionar uma collection (o padrão)
 
-1. Adicione a collection no `server/config.ts` (siga o estilo de uma existente).
+1. Crie `server/collections/<slug>.ts` (siga o estilo de uma existente) e registre no
+   `server/config.ts`.
 2. Reinicie o `bun dev` — o `generateTypes` atualiza `server/types.ts`.
 3. Use no frontend:
 
@@ -118,3 +122,22 @@ Métodos:
 - `useAuth()` → login (o `create` exige `authenticated`)
 
 Use esse arquivo como referência de "como tudo se encaixa".
+
+## 6. Layers (múltiplos apps no monolito)
+
+O app raiz (`app/`) é o **dashboard** (operador, exige login). A pasta `layers/` (vazia
+por enquanto) recebe **frontends secundários** — cada um com seu `index.html` + `main.tsx`
+
+- rotas próprias, servidos como rotas novas no `index.ts`:
+
+```ts
+routes: {
+  '/*': dashboard,        // app raiz (operador)
+  '/kiosk/*': kioskIndex, // layer kiosk (customer-facing, SEM auth)
+  '/app/*': appIndex,     // layer app (cliente)
+  '/api/*': handleEndpoints,
+}
+```
+
+Cada layer compartilha `server/` (API) e `shared/` (sdk + stores); só o frontend é
+próprio. Camada customer-facing (kiosk) **não** passa pelo guard de auth do dashboard.
