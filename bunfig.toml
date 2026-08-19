@@ -1,5 +1,5 @@
-# [install]
-# linker = "hoisted"
+[install]
+linker = "hoisted"
 
 [serve.static]
 plugins = ["bun-plugin-tailwind"]

@@ -8,13 +8,18 @@ await rm(outdir, { recursive: true, force: true });
 // const entrypoints = [...new Bun.Glob("src/**/*.html").scanSync()];
 
 const result = await Bun.build({
-  // entrypoints,
   entrypoints: ['./index.ts'],
   outdir,
   plugins: [tailwind],
   minify: true,
+  compile: true,
+  splitting: false,
+  bytecode: false,
   target: 'bun',
-  sourcemap: 'linked',
+  format: 'esm',
+  packages: 'bundle',
+  sourcemap: 'none',
+  env: 'inline',
   define: { 'process.env.NODE_ENV': JSON.stringify('production') },
 });
 

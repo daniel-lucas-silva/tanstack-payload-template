@@ -17,7 +17,7 @@ await generateTypes(serverConfig, { log: true });
 
 const server = Bun.serve<WSContext>({
   reusePort: true,
-  port: Number(Bun.env.PORT ?? 3333),
+  port: Number(Bun.env.PORT ?? 3000),
   hostname: '0.0.0.0',
   development: process.env.NODE_ENV !== 'production' && {
     // Enable browser hot reloading in development
