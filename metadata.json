@@ -1,0 +1,6 @@
+{
+  "name": "Fullstack Payload TanStack Template",
+  "description": "Starter template for Bun + Payload 3.88 (API-only) + TanStack Router/Query/Store/Form",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

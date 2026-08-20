@@ -123,21 +123,18 @@ Métodos:
 
 Use esse arquivo como referência de "como tudo se encaixa".
 
-## 6. Layers (múltiplos apps no monolito)
+## 6. Layers (múltiplos frontends no monolito)
 
-O app raiz (`app/`) é o **dashboard** (operador, exige login). A pasta `layers/` (vazia
-por enquanto) recebe **frontends secundários** — cada um com seu `index.html` + `main.tsx`
-
-- rotas próprias, servidos como rotas novas no `index.ts`:
+O app raiz (`app/`) é o frontend principal. A pasta `layers/` permite plugar **frontends adicionais** (ex.: portais, painéis ou apps secundárias) que rodam no mesmo processo Bun e compartilham o mesmo `server/` (API Payload) e `shared/` (SDK e stores):
 
 ```ts
+// Exemplo no index.ts:
 routes: {
-  '/*': dashboard,        // app raiz (operador)
-  '/kiosk/*': kioskIndex, // layer kiosk (customer-facing, SEM auth)
-  '/app/*': appIndex,     // layer app (cliente)
-  '/api/*': handleEndpoints,
+  '/api/*': handleEndpoints,  // API Payload
+  '/admin/*': adminAppHtml,   // Layer secundária isolada
+  '/*': mainAppHtml,          // Frontend principal (app/)
 }
 ```
 
-Cada layer compartilha `server/` (API) e `shared/` (sdk + stores); só o frontend é
-próprio. Camada customer-facing (kiosk) **não** passa pelo guard de auth do dashboard.
+Cada layer possui seu próprio `index.html` + `main.tsx` + árvore de rotas TanStack Router com `basepath` correspondente.
+
