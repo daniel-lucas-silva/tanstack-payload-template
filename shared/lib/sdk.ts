@@ -4,7 +4,7 @@ import { PayloadSDK } from '@payloadcms/sdk';
 
 export const sdk = new PayloadSDK<Config>({
   baseURL: (import.meta?.env?.BUN_PUBLIC_SERVER_URL ?? '') + '/api',
-  // baseInit: { credentials: 'include' },
+  baseInit: { credentials: 'include' },
 });
 
 /* EXAMPLES */

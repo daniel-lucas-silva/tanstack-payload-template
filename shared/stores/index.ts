@@ -7,6 +7,9 @@ export type { GlobalState } from './global';
 export { createAuthStore, getAuthStore, useAuth } from './auth';
 export type { AuthState } from './auth';
 
+export { useSync, SyncStatusBadge, SyncFloatingIndicator, syncEngine, offlineDB } from '../sync';
+export type { SyncEngineState, PendingMutation } from '../sync';
+
 export type {
   AuthSlug,
   AuthUser,

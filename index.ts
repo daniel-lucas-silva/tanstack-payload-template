@@ -1,3 +1,4 @@
+import '@/server/bootstrap';
 import { serve } from 'bun';
 import { handleEndpoints } from 'payload';
 import { generateTypes } from 'payload/node';
@@ -48,24 +49,76 @@ const server = Bun.serve<WSContext>({
 });
 
 async function buildRoutes<WebSocketData = undefined>(): Promise<Routes<WebSocketData>> {
+  const isProd = process.env.NODE_ENV === 'production';
+  const distSwExists = await Bun.file('dist/sw.js').exists();
+
   const routes: Routes<WebSocketData> = {
-    // Serve index.html for all unmatched routes.
-    '/*': index,
+    // Service Worker route
+    '/sw.js': async () => {
+      if (isProd && distSwExists) {
+        return new Response(Bun.file('dist/sw.js'), {
+          headers: {
+            'Content-Type': 'application/javascript; charset=utf-8',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+          },
+        });
+      }
+
+      // Dev mode: bundle sw.ts on the fly
+      try {
+        const swBuild = await Bun.build({
+          entrypoints: ['app/sw.ts'],
+          target: 'browser',
+          minify: false,
+          define: {
+            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+          },
+        });
+
+        const output = swBuild.outputs[0];
+        if (!output) {
+          return new Response('console.error("SW build failed");', {
+            headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
+          });
+        }
+
+        return new Response(await output.text(), {
+          headers: {
+            'Content-Type': 'application/javascript; charset=utf-8',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+          },
+        });
+      } catch (err) {
+        console.error('[PWA SW Build Error]', err);
+        return new Response(`console.error("SW error: ${String(err)}");`, {
+          headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
+        });
+      }
+    },
+
+    '/manifest.webmanifest': () => {
+      return new Response(Bun.file('public/manifest.webmanifest'), {
+        headers: { 'Content-Type': 'application/manifest+json' },
+      });
+    },
+
+    '/offline.html': () => {
+      return new Response(Bun.file('public/offline.html'), {
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
+      });
+    },
+
+    // Payload API
     '/api/*': async (request) => {
       return await handleEndpoints({ config: serverConfig, request });
     },
-    // '/api/hello': {
-    //   async GET(req) {
-    //     return Response.json({ message: 'Hello, world!', method: 'GET' });
-    //   },
-    //   async PUT(req) {
-    //     return Response.json({ message: 'Hello, world!', method: 'PUT' });
-    //   },
-    // },
+
+    // Serve index.html for all unmatched routes.
+    '/*': index,
   };
 
   const glob = new Bun.Glob(
-    '**/*.{png,jpg,jpeg,gif,svg,css,js,ico,woff,woff2,ttf,eot,mp4,webm,ogg,mp3,wav,aac,flac,m4a,xml,json,map}',
+    '**/*.{png,jpg,jpeg,gif,svg,css,js,ico,woff,woff2,ttf,eot,mp4,webm,ogg,mp3,wav,aac,flac,m4a,xml,json,webmanifest,html,map}',
   );
   for await (const path of glob.scan({ onlyFiles: true, cwd: './public' })) {
     routes[`/${path}`] = new Response(Bun.file(`./public/${path}`));

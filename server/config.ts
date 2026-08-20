@@ -22,10 +22,12 @@
  * ============================================================================
  */
 
+import './bootstrap';
+
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { resendAdapter } from '@payloadcms/email-resend';
 import { mcpPlugin } from '@payloadcms/plugin-mcp';
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob';
+import { gcsStorage } from '@payloadcms/storage-gcs';
 import { buildConfig } from 'payload';
 import sharp from 'sharp';
 
@@ -37,6 +39,7 @@ import { Media } from './collections/media';
 import { Posts } from './collections/posts';
 import { Tags } from './collections/tags';
 import { Users } from './collections/users';
+import { getMongoUri } from './db';
 import { rootEndpoints } from './endpoints';
 import { Navigation } from './globals/navigation';
 import { SiteSettings } from './globals/site-settings';
@@ -46,7 +49,7 @@ export default buildConfig({
   // Segredo para assinar JWTs/cookies. Nunca hardcode em produção.
   secret: process.env.PAYLOAD_SECRET ?? 'dev-secret',
 
-  db: mongooseAdapter({ url: process.env.MONGODB_URI ?? 'mongodb://127.0.0.1/fullstack-payload-examples' }),
+  db: mongooseAdapter({ url: await getMongoUri() }),
 
   // URL pública da API (usada em links, emails, redirects).
   serverURL: process.env.SERVER_URL ?? 'http://localhost:3333',
@@ -67,8 +70,22 @@ export default buildConfig({
         users: { enabled: true, description: 'Users' },
       },
     }),
-    // STORAGE (Vercel Blob): o token vem do env; sem ele, usa o disco local.
-    vercelBlobStorage({ collections: { media: true }, token: process.env.BLOB_READ_WRITE_TOKEN }),
+    // STORAGE (Google Cloud Storage): se GCS_BUCKET estiver definido, envia
+    // os uploads para a nuvem da Google; caso contrário, usa armazenamento local em disco.
+    ...(process.env.GCS_BUCKET
+      ? [
+          gcsStorage({
+            collections: { media: true },
+            bucket: process.env.GCS_BUCKET,
+            options: {
+              projectId: process.env.GCS_PROJECT_ID,
+              ...(process.env.GCS_CREDENTIALS
+                ? { credentials: JSON.parse(process.env.GCS_CREDENTIALS) }
+                : {}),
+            },
+          }),
+        ]
+      : []),
   ],
 
   // Email (obrigatório para verify/forgotPassword). Condicional: sem a key,

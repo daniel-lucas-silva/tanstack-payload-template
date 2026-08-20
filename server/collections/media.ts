@@ -4,7 +4,7 @@ import { admins, anyone, authenticated } from '../access';
 
 /**
  * Upload com tamanhos derivados (sharp), foco e MIME permitido. O armazenamento
- * real (Vercel Blob) é ligado no `plugins:` do buildConfig.
+ * em nuvem (Google Cloud Storage) é configurado condicionalmente no `plugins:` do buildConfig.
  */
 export const Media: CollectionConfig = {
   slug: 'media',

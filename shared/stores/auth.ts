@@ -1,5 +1,6 @@
 import { useStore } from '@tanstack/react-store';
 import { Store } from '@tanstack/store';
+import { useEffect } from 'react';
 
 import type { AuthSlug, AuthUser, StoreStatus } from './types';
 
@@ -46,11 +47,11 @@ export function createAuthStore<S extends AuthSlug>(slug: S) {
     set({ status: 'loading', error: null });
     try {
       const result = await sdk.me({ collection: slug }, init);
-      set({ status: 'ready', user: result.user as AuthUser<S> });
+      set({ status: 'ready', user: (result?.user as AuthUser<S>) ?? null, error: null });
       return result;
     } catch (error) {
-      set({ status: 'error', error: error instanceof Error ? error.message : String(error) });
-      throw error;
+      set({ status: 'ready', user: null, error: null });
+      return null;
     }
   }
 
@@ -62,9 +63,14 @@ export function createAuthStore<S extends AuthSlug>(slug: S) {
 
   const verifyEmail = (token: string) => sdk.verifyEmail({ collection: slug, token });
 
-  /** Limpa o estado local (logout). */
-  function logout() {
-    set({ user: null, token: null, status: 'idle', error: null });
+  /** Limpa o estado local (logout) e notifica o backend. */
+  async function logout() {
+    try {
+      await sdk.request({ path: `/${slug}/logout`, method: 'POST' });
+    } catch {
+      // Ignora erro de rede no logout
+    }
+    set({ user: null, token: null, status: 'ready', error: null });
   }
 
   return { store, login, logout, me, refreshToken, forgotPassword, resetPassword, verifyEmail };
@@ -91,5 +97,14 @@ export function getAuthStore<S extends AuthSlug>(slug: S = 'users' as S) {
 export function useAuth<S extends AuthSlug = 'users'>(slug?: S) {
   const { store, ...methods } = getAuthStore((slug ?? 'users') as S);
   const state = useStore(store, (s) => s);
+
+  useEffect(() => {
+    const targetSlug = (slug ?? 'users') as S;
+    const entry = getAuthStore(targetSlug);
+    if (entry.store.state.status === 'idle') {
+      void entry.me();
+    }
+  }, [slug]);
+
   return { ...state, ...methods };
 }

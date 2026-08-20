@@ -10,11 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ComponentsIndexRouteImport } from './routes/components/index'
 import { Route as PostsIndexRouteImport } from './routes/posts/index'
+import { Route as PwaIndexRouteImport } from './routes/pwa/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComponentsIndexRoute = ComponentsIndexRouteImport.update({
+  id: '/components/',
+  path: '/components/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PostsIndexRoute = PostsIndexRouteImport.update({
@@ -22,31 +29,44 @@ const PostsIndexRoute = PostsIndexRouteImport.update({
   path: '/posts/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PwaIndexRoute = PwaIndexRouteImport.update({
+  id: '/pwa/',
+  path: '/pwa/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/components/': typeof ComponentsIndexRoute
   '/posts/': typeof PostsIndexRoute
+  '/pwa/': typeof PwaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/components': typeof ComponentsIndexRoute
   '/posts': typeof PostsIndexRoute
+  '/pwa': typeof PwaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/components/': typeof ComponentsIndexRoute
   '/posts/': typeof PostsIndexRoute
+  '/pwa/': typeof PwaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/posts/'
+  fullPaths: '/' | '/components/' | '/posts/' | '/pwa/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/posts'
-  id: '__root__' | '/' | '/posts/'
+  to: '/' | '/components' | '/posts' | '/pwa'
+  id: '__root__' | '/' | '/components/' | '/posts/' | '/pwa/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ComponentsIndexRoute: typeof ComponentsIndexRoute
   PostsIndexRoute: typeof PostsIndexRoute
+  PwaIndexRoute: typeof PwaIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,6 +78,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/components/': {
+      id: '/components/'
+      path: '/components'
+      fullPath: '/components/'
+      preLoaderRoute: typeof ComponentsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/posts/': {
       id: '/posts/'
       path: '/posts'
@@ -65,12 +92,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pwa/': {
+      id: '/pwa/'
+      path: '/pwa'
+      fullPath: '/pwa/'
+      preLoaderRoute: typeof PwaIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ComponentsIndexRoute: ComponentsIndexRoute,
   PostsIndexRoute: PostsIndexRoute,
+  PwaIndexRoute: PwaIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

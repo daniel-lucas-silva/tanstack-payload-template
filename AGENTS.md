@@ -36,8 +36,11 @@ app/routes/         (páginas React, TanStack Router file-based)
   `config.ts` (só monta), `collections/`, `globals/`, `access/`, `jobs/`, `endpoints/`.
   Ao adicionar collection/global/job/endpoint, crie o arquivo na pasta certa e registre
   no `config.ts`. Leia os comentários: o avançado está explicado; o básico está só presente.
+- **Modelagem de Domínio Flexível**: O `server/` é um **catálogo de capacidades e padrões**, não um schema fixo. Ao iniciar ou desenvolver novos projetos (ex.: e-commerce, clínica, CRM, reservas), **crie as collections e rotas do domínio solicitado**, aplicando os padrões modulares demonstrados, sem forçar o uso de collections de demonstração (`posts`, `field-showcase`, etc.).
 - **`server/types.ts`** e **`app/routeTree.gen.ts`** — GERADOS. Nunca edite. `types.ts`
   regenera no boot do `bun dev`; `routeTree.gen.ts` regenera com `bun run routes:gen`.
+- **`shared/`** — lib (`sdk.ts`), `stores/` (reativos), `pwa/` (Workbox hooks, registro e componentes).
+- **`app/`** — `routes/` (páginas TanStack), `sw.ts` (Service Worker Workbox), `index.html` (entrypoint com manifest PWA).
 - **Acesso à API no frontend SÓ via** `@payloadcms/sdk` (`shared/lib/sdk.ts`) e os stores
   de `shared/stores/`. **Não use `fetch` direto.**
 - Stores são **singletons por slug** — `useCollection('posts')` compartilha estado entre componentes.

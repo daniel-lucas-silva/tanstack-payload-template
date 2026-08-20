@@ -1,4 +1,5 @@
 import type { Endpoint } from 'payload';
+import { pwaEndpoints } from './pwa';
 
 /**
  * Endpoints de RAIZ: montam em /api/<path>.
@@ -6,6 +7,7 @@ import type { Endpoint } from 'payload';
  * `req.routeParams` são os parâmetros da URL, e `await req.json()` lê o body.
  */
 export const rootEndpoints: Endpoint[] = [
+  ...pwaEndpoints,
   // Healthcheck simples.
   { path: '/health', method: 'get', handler: () => Response.json({ status: 'ok' }) },
   // Local API dentro de endpoint.

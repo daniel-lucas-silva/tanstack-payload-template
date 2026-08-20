@@ -28,8 +28,8 @@ tipo manualmente.
 
 ### `server/` — o catálogo de capacidades, por pastas
 
-O `server/config.ts` é só o ponto de **montagem** — importa as peças e chama `buildConfig`.
-Cada peça vive na sua pasta e demonstra **tudo** o que o Payload faz, só na API (sem admin UI):
+O `server/config.ts` é o ponto de **montagem** — importa as peças e chama `buildConfig`.
+Cada peça vive na sua pasta e serve como **catálogo vivo de capacidades técnicas**, demonstrando como o Payload 3.88 funciona (sem admin UI):
 
 - **Access control** — helpers reutilizáveis (`anyone`, `authenticated`, `admins`,
   `selfOrAdmin`, `publishedOrAuthenticated`), row-level com `Where`, field access,
@@ -42,8 +42,9 @@ Cada peça vive na sua pasta e demonstra **tudo** o que o Payload faz, só na AP
 - **Fields** — join, relationship polimórfica, slug, virtual, blocks/array/group/tabs,
   drafts, trash, orderable, localization + i18n.
 
-> Não é para copiar o schema. É para **entender como se configura** cada recurso.
-> Leia os comentários do arquivo — o avançado está explicado; o básico está só presente.
+> **IMPORTANTE — Catálogo vs. Domínio:**
+> O `server/` **não é um schema obrigatório ou rígido**. Ao construir um projeto real (e-commerce, clínica, CRM, agendamentos, etc.), crie as collections e globals adequadas para aquele domínio específico, seguindo a mesma estrutura modular (1 arquivo por collection/global/job/endpoint). Não tente reaproveitar schemas de demonstração (`field-showcase`, `posts`) quando o domínio for outro.
+
 
 ### `shared/lib/sdk.ts`
 

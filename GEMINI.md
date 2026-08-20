@@ -14,7 +14,7 @@
 ```
 server/
   config.ts            → ponto de MONTAGEM (importa as peças, chama buildConfig)
-  collections/         → 1 arquivo por collection
+  collections/         → 1 arquivo por collection (crie as collections do domínio específico)
   globals/             → 1 arquivo por global
   access/index.ts      → access control reutilizável
   jobs/index.ts        → tasks + workflows
@@ -23,11 +23,16 @@ server/
 shared/
   lib/sdk.ts           → instância PayloadSDK<Config>
   stores/              → useCollection / useGlobal / useAuth (reativos, auto-fetch)
+  pwa/                 → usePWA, registro Workbox e componentes PWA
 app/
   routes/              → TanStack Router file-based (1 arquivo por rota)
   routeTree.gen.ts     → GERADO — rode `bun run routes:gen`
+  sw.ts                → Service Worker com Workbox (precache, sync, push, cache)
 layers/                → apps secundárias (ex.: kiosk, app do cliente)
 ```
+
+> **Catálogo vs. Domínio:** A pasta `server/` demonstra as capacidades do Payload 3.88. Ao desenvolver novos projetos, crie as collections e regras específicas para o domínio do usuário (ex: produtos, pacientes, agendamentos), sem forçar o reuso de schemas de demonstração.
+
 
 ## Fluxo de dados
 
